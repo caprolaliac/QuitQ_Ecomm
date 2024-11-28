@@ -6,9 +6,10 @@ using quitq_cf.Repository;
 
 namespace quitq_cf.Controllers
 {
+    [EnableCors("AllowAny")]
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("Cors")]
+
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;

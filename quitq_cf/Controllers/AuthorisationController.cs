@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Cors;
 
 namespace quitq_cf.Controllers
 {
+    [EnableCors("AllowAny")]
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("Cors")]
+    
     public class AuthorisationController : ControllerBase
     {
         private readonly IAuthorisationService _authorisationService;

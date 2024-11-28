@@ -5,9 +5,9 @@ using quitq_cf.Repository;
 
 namespace quitq_cf.Controllers
 {
+    [EnableCors("AllowAny")]
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("Cors")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;

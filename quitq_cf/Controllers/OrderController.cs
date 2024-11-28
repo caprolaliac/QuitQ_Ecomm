@@ -7,9 +7,9 @@ using quitq_cf.Repository;
 
 namespace quitq_cf.Controllers
 {
+    [EnableCors("AllowAny")]
     [ApiController]
     [Route("api/[controller]")]
-    [EnableCors("Cors")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;

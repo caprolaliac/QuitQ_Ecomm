@@ -7,9 +7,9 @@ using System.Security.Claims;
 
 namespace quitq_cf.Controllers
 {
+    [EnableCors("AllowAny")]
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("Cors")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;

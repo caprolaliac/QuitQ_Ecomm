@@ -6,9 +6,9 @@ using quitq_cf.Repository;
 
 namespace quitq_cf.Controllers
 {
+    [EnableCors("AllowAny")]
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("Cors")]
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;

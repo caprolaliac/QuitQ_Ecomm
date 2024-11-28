@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using quitq_cf.Repository;
 using quitq_cf.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace quitq_cf.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("Cors")]
     public class AuthorisationController : ControllerBase
     {
         private readonly IAuthorisationService _authorisationService;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using quitq_cf.Repository;
 
@@ -6,6 +7,7 @@ namespace quitq_cf.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("Cors")]
     public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;

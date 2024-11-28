@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using quitq_cf.Models;
 using quitq_cf.Repository;
@@ -7,6 +8,7 @@ namespace quitq_cf.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("Cors")]
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;

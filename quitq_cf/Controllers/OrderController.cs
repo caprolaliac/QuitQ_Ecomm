@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using quitq_cf.Data;
 using quitq_cf.DTO;
@@ -8,6 +9,7 @@ namespace quitq_cf.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("Cors")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;

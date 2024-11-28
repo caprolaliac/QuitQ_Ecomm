@@ -184,5 +184,10 @@ namespace quitq_cf.Repository
                 };
             }
         }
+
+        public Task DeleteProductAsync(int productId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

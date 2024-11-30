@@ -69,16 +69,32 @@ namespace quitq_cf.Repository
 
         public async Task<IEnumerable<CartItemDTO>> GetCartItemsAsync(string userId)
         {
-            var cartItems = await _appDBContext.Carts
-                .Where(c => c.UserId == userId)
-                .Select(c => new CartItemDTO
-                {
-                    ProductId = (int)c.ProductId,
-                    Quantity = c.Quantity
-                }).ToListAsync();
+            try
+            {
+                var cartItems = await _appDBContext.Carts
+                    .Where(c => c.UserId == userId)
+                    .Join(
+                        _appDBContext.Products,
+                        cart => cart.ProductId,
+                        product => product.ProductId,
+                        (cart, product) => new CartItemDTO
+                        {
+                            ProductId = cart.ProductId,
+                            Quantity = cart.Quantity,
+                            ProductName = product.ProductName
+                        }
+                    )
+                    .ToListAsync();
 
-            return cartItems;
+                return cartItems;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (optional: log the exception)
+                throw new Exception("Error occurred while fetching cart items.", ex);
+            }
         }
+
 
         public async Task<Response> RemoveFromCartAsync(string userId, int productId)
         {

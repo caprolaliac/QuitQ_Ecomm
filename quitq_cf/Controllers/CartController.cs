@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using quitq_cf.DTO;
 using quitq_cf.Repository;
+using System.Security.Claims;
 
 namespace quitq_cf.Controllers
 {
@@ -21,13 +22,21 @@ namespace quitq_cf.Controllers
             _logger = logger;
         }
         [Authorize(Roles = "Customer,Admin")]
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetCartItems(string userId)
+        [HttpGet]
+        public async Task<IActionResult> GetCartItems()
         {
             try
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized(new { Message = "User ID not found in token." });
+                }
+
                 _logger.LogInformation($"Fetching cart items for user ID: {userId}");
                 var cartItems = await _cartService.GetCartItemsAsync(userId);
+
                 if (cartItems == null || !cartItems.Any())
                 {
                     _logger.LogWarning($"No cart items found for user ID: {userId}");
@@ -39,16 +48,19 @@ namespace quitq_cf.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occurred while fetching cart items for user ID {userId}: {ex.Message}");
-                return StatusCode(500, "Error occurred while fetching cart items");
+                _logger.LogError($"Error occurred while fetching cart items for user ID: {ex.Message}");
+                return StatusCode(500, "Error occurred while fetching cart items.");
             }
         }
         [Authorize(Roles = "Customer")]
         [HttpPost]
-        public async Task<IActionResult> AddToCart([FromBody] CartItemDTO item, [FromQuery] string userId)
+        public async Task<IActionResult> AddToCart([FromBody] CartItemDTO item)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             try
             {
+
                 _logger.LogInformation($"Attempting to add product {item.ProductId} to cart for user ID: {userId}");
                 var response = await _cartService.AddToCartAsync(userId, item);
 
@@ -69,8 +81,10 @@ namespace quitq_cf.Controllers
         }
         [Authorize(Roles = "Customer")]
         [HttpPut]
-        public async Task<IActionResult> UpdateCartItem([FromBody] CartItemDTO item, [FromQuery] string userId)
+        public async Task<IActionResult> UpdateCartItem([FromBody] CartItemDTO item )
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             try
             {
                 _logger.LogInformation($"Attempting to update cart item {item.ProductId} for user ID: {userId}");
@@ -93,8 +107,10 @@ namespace quitq_cf.Controllers
         }
         [Authorize(Roles = "Customer")]
         [HttpDelete("{productId}")]
-        public async Task<IActionResult> RemoveFromCart([FromQuery] string userId, int productId)
+        public async Task<IActionResult> RemoveFromCart(int productId)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             try
             {
                 _logger.LogInformation($"Attempting to remove product {productId} from cart for user ID: {userId}");
@@ -117,8 +133,10 @@ namespace quitq_cf.Controllers
         }
         [Authorize(Roles = "Customer")]
         [HttpDelete]
-        public async Task<IActionResult> ClearCart([FromQuery] string userId)
+        public async Task<IActionResult> ClearCart()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             try
             {
                 _logger.LogInformation($"Attempting to clear cart for user ID: {userId}");

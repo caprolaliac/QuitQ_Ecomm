@@ -18,6 +18,7 @@ namespace quitq_cf.Mapping
             CreateMap<OrderDetailDTO, OrderDetail>().ReverseMap();
             CreateMap<ProductDTO, Product>().ReverseMap();
             CreateMap<UpdateProductDTO, Product>().ReverseMap();
+            CreateMap<ProcessPaymentDTO, Payment>().ReverseMap();
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using quitq_cf.DTO;
 using quitq_cf.Models;
 using quitq_cf.Repository;
 
@@ -21,28 +22,29 @@ namespace quitq_cf.Controllers
         }
         [Authorize(Roles = "Customer")]
         [HttpPost]
-        public async Task<IActionResult> ProcessPayment([FromBody] Payment payment)
+        public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentDTO paymentDto)
         {
             try
             {
-                _logger.LogInformation($"Attempting to process payment for order ID: {payment.OrderId}");
-                var response = await _paymentService.ProcessPaymentAsync((int)payment.OrderId, payment.PaymentMethod, payment.Amount);
+                _logger.LogInformation($"Attempting to process payment for order ID: {paymentDto.OrderId}");
+                var response = await _paymentService.ProcessPaymentAsync(paymentDto.OrderId, paymentDto.PaymentMethod, paymentDto.Amount);
 
                 if (response.Status == "Success")
                 {
-                    _logger.LogInformation($"Payment for order ID {payment.OrderId} processed successfully.");
+                    _logger.LogInformation($"Payment for order ID {paymentDto.OrderId} processed successfully.");
                     return Ok(response);
                 }
 
-                _logger.LogWarning($"Payment processing failed for order ID {payment.OrderId}: {response.Message}");
+                _logger.LogWarning($"Payment processing failed for order ID {paymentDto.OrderId}: {response.Message}");
                 return BadRequest(response);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occurred while processing payment for order ID {payment.OrderId}: {ex.Message}");
+                _logger.LogError($"Error occurred while processing payment for order ID {paymentDto.OrderId}: {ex.Message}");
                 return StatusCode(500, "Error occurred while processing payment");
             }
         }
+
         [Authorize(Roles = " Seller, Admin")]
         [HttpPost("validate")]
         public async Task<IActionResult> ValidatePayment([FromQuery] string transactionId)

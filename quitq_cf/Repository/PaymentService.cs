@@ -25,11 +25,13 @@ namespace quitq_cf.Repository
 
                 var payment = new Payment
                 {
+                    PaymentId = Guid.NewGuid().ToString(),
                     OrderId = orderId,
                     PaymentMethod = paymentMethod,
                     Amount = amount,
                     PaymentDate = DateTime.UtcNow,
-                    TransactionId = Guid.NewGuid().ToString()
+                    TransactionId = Guid.NewGuid().ToString(),
+                    PaymentStatus = "Completed"  
                 };
 
                 _appDBContext.Payments.Add(payment);
@@ -40,9 +42,12 @@ namespace quitq_cf.Repository
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in ProcessPaymentAsync: {ex.Message}");
+
+                // In case of failure, you can return a status with failure
                 return new Response { Status = "Failure", Message = "An error occurred while processing the payment." };
             }
         }
+
 
         public async Task<Response> ValidatePaymentAsync(string transactionId)
         {

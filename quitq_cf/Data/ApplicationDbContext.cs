@@ -186,6 +186,16 @@ namespace quitq_cf.Data
                     .HasMaxLength(255)
                     .HasColumnName("shipping_address");
 
+                entity.Property(e => e.PaymentDate)
+                   .HasColumnType("datetime2")
+                   .HasColumnName("PaymentDate")
+                   .HasDefaultValueSql("(getdate())");
+
+
+                entity.Property(e => e.PaymentMethod)
+                     .HasMaxLength(50)
+                     .HasColumnName("PaymentMethod");
+
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
                 entity.Property(e => e.TotalAmount)

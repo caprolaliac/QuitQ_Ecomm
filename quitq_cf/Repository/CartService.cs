@@ -81,7 +81,8 @@ namespace quitq_cf.Repository
                         {
                             ProductId = cart.ProductId,
                             Quantity = cart.Quantity,
-                            ProductName = product.ProductName
+                            ProductName = product.ProductName,
+                            Price = product.Price // Fetch the price from the Product table
                         }
                     )
                     .ToListAsync();
@@ -90,10 +91,10 @@ namespace quitq_cf.Repository
             }
             catch (Exception ex)
             {
-                // Handle exceptions (optional: log the exception)
                 throw new Exception("Error occurred while fetching cart items.", ex);
             }
         }
+
 
 
         public async Task<Response> RemoveFromCartAsync(string userId, int productId)

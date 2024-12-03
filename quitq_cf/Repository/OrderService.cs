@@ -267,8 +267,9 @@ public class OrderService : IOrderService
 
         foreach (var order in orders)
         {
-            Console.WriteLine(order.PaymentDate.ToString);
+            Console.WriteLine(order.PaymentDate?.ToString("yyyy-MM-dd") ?? "Payment date not available");
         }
+
 
         return _mapper.Map<IEnumerable<OrderDTO>>(orders);
     }

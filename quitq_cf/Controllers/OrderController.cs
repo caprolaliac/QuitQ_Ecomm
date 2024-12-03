@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using quitq_cf.Data;
 using quitq_cf.DTO;
 using quitq_cf.Repository;
+using System.Security.Claims;
 
 namespace quitq_cf.Controllers
 {
@@ -80,31 +81,63 @@ namespace quitq_cf.Controllers
             }
         }
 
-        [HttpGet("user/{userId}")]
+        //[HttpGet("user")]
+        ////[Authorize(Roles = "Customer")]
+        //public async Task<IActionResult> GetUserOrders(string userId)
+        //{
+        //    try
+        //    {
+        //        var response = await _orderService.GetUserOrdersAsync(userId);
+
+        //        if (response != null)
+        //        {
+        //            _logger.LogInformation("Orders retrieved for User: {UserId}", userId);
+        //            return Ok(response);
+        //        }
+        //        else
+        //        {
+        //            _logger.LogWarning("No orders found for User: {UserId}", userId);
+        //            return NotFound(new Response { Status = "Failed", Message = "No orders found for this user" });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error retrieving orders for User: {UserId}", userId);
+        //        return StatusCode(500, new Response { Status = "Failed", Message = "An error occurred while retrieving user orders" });
+        //    }
+        //}
+
+        [HttpGet("user")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> GetUserOrders(string userId)
+        public async Task<IActionResult> GetUserOrders()
         {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized(new { Message = "User ID not found in token." });
+            }
+
             try
             {
                 var response = await _orderService.GetUserOrdersAsync(userId);
 
                 if (response != null)
                 {
-                    _logger.LogInformation("Orders retrieved for User: {UserId}", userId);
                     return Ok(response);
                 }
                 else
                 {
-                    _logger.LogWarning("No orders found for User: {UserId}", userId);
-                    return NotFound(new Response { Status = "Failed", Message = "No orders found for this user" });
+                    return NotFound(new { Message = "No orders found." });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving orders for User: {UserId}", userId);
-                return StatusCode(500, new Response { Status = "Failed", Message = "An error occurred while retrieving user orders" });
+                _logger.LogError(ex, "Error retrieving orders for user: {UserId}", userId);
+                return StatusCode(500, new { Message = "An error occurred while retrieving orders." });
             }
         }
+
+
 
         [HttpGet("seller/{sellerId}")]
         [Authorize(Roles = "Seller, Admin")]

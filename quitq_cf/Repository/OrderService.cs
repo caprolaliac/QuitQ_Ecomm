@@ -265,8 +265,14 @@ public class OrderService : IOrderService
             .Where(o => o.UserId == userId)
             .ToListAsync();
 
+        foreach (var order in orders)
+        {
+            Console.WriteLine(order.PaymentDate.ToString);
+        }
+
         return _mapper.Map<IEnumerable<OrderDTO>>(orders);
     }
+
 
     public async Task<IEnumerable<OrderDTO>> GetSellerOrdersAsync(string sellerId)
     {
@@ -354,6 +360,21 @@ public class OrderService : IOrderService
                 Status = "Failed",
                 Message = $"Error cancelling order: {ex.Message}"
             };
+        }
+    }
+
+    public async Task<List<Order>> GetAllOrdersAsync()
+    {
+        try
+        {
+            return await _context.Orders
+                         .Include(o => o.Status)
+                         .ToListAsync();
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw new NotImplementedException();
         }
     }
 }

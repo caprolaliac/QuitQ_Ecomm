@@ -55,6 +55,21 @@ namespace quitq_cf.Controllers
             }
         }
 
+        [HttpGet("all")]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            try
+            {
+                var orders = await _orderService.GetAllOrdersAsync();
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("{orderId}")]
         [Authorize(Roles = "Customer, Seller, Admin")]
         public async Task<IActionResult> GetOrderById(int orderId)
@@ -98,19 +113,17 @@ namespace quitq_cf.Controllers
 
                 if (response != null)
                 {
-                    _logger.LogInformation("Orders retrieved for User: {UserId}", userId);
                     return Ok(response);
                 }
                 else
                 {
-                    _logger.LogWarning("No orders found for User: {UserId}", userId);
-                    return NotFound(new Response { Status = "Failed", Message = "No orders found for this user" });
+                    return NotFound(new { Message = "No orders found." });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving orders for User: {UserId}", userId);
-                return StatusCode(500, new Response { Status = "Failed", Message = "An error occurred while retrieving user orders" });
+                _logger.LogError(ex, "Error retrieving orders for user: {UserId}", userId);
+                return StatusCode(500, new { Message = "An error occurred while retrieving orders." });
             }
         }
 

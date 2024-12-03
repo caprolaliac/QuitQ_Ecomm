@@ -55,6 +55,21 @@ namespace quitq_cf.Controllers
             }
         }
 
+        [HttpGet("all")]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            try
+            {
+                var orders = await _orderService.GetAllOrdersAsync();
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("{orderId}")]
         [Authorize(Roles = "Customer, Seller, Admin")]
         public async Task<IActionResult> GetOrderById(int orderId)

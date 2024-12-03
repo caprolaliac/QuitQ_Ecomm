@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using quitq_cf.Data;
 using quitq_cf.DTO;
 using quitq_cf.Repository;
+using System.Security.Claims;
 
 namespace quitq_cf.Controllers
 {
@@ -80,10 +81,17 @@ namespace quitq_cf.Controllers
             }
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("user")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> GetUserOrders(string userId)
+        public async Task<IActionResult> GetUserOrders()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                _logger.LogWarning("User ID not found in token");
+                return Unauthorized(new Response { Status = "Failed", Message = "User ID not found in token" });
+            }
+
             try
             {
                 var response = await _orderService.GetUserOrdersAsync(userId);
@@ -105,6 +113,7 @@ namespace quitq_cf.Controllers
                 return StatusCode(500, new Response { Status = "Failed", Message = "An error occurred while retrieving user orders" });
             }
         }
+
 
         [HttpGet("seller/{sellerId}")]
         [Authorize(Roles = "Seller, Admin")]

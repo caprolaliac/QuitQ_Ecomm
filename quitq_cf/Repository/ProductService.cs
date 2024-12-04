@@ -189,5 +189,36 @@ namespace quitq_cf.Repository
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<ProductDTO>> SearchProductsAsync(string? query, decimal? minPrice, decimal? maxPrice)
+        {
+            var productsQuery = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                productsQuery = productsQuery.Where(p => p.ProductName.Contains(query) || p.Description.Contains(query));
+            }
+
+            if (minPrice.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.Price >= minPrice);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.Price <= maxPrice);
+            }
+
+            var products = await productsQuery.ToListAsync();
+
+            return products.Select(p => new ProductDTO
+            {
+                ProductId = p.ProductId,
+                ProductName = p.ProductName,
+                Price = p.Price,
+                Description = p.Description,
+                ImageUrl = p.ImageUrl,
+            });
+        }
     }
 }

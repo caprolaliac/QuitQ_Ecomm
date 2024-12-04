@@ -156,5 +156,19 @@ namespace quitq_cf.Controllers
                 return StatusCode(500, "Internal server error :  Error updating stock");
             }
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchProducts([FromQuery] string? query, [FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice)
+        {
+            try
+            {
+                var products = await _productService.SearchProductsAsync(query, minPrice, maxPrice);
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while searching for products.", Error = ex.Message });
+            }
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace quitq_cf.Repository
         Task<Response> UpdateProductAsync(int productId, string sellerId, UpdateProductDTO product);
         Task<Response> DeleteProductAsync(int productId, string sellerId);
         Task<Response> UpdateStockAsync(int productId, int quantity);
+        Task<IEnumerable<ProductDTO>> SearchProductsAsync(string? query, decimal? minPrice, decimal? maxPrice);
+
         Task DeleteProductAsync(int productId);
     }
 }

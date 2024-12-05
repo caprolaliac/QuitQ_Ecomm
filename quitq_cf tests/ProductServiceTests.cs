@@ -166,7 +166,7 @@ namespace Quit_q_test
             var expectedResponse = new Response { Status = "Success", Message = "Stock updated successfully" };
 
             _mockDbContext.Setup(db => db.Products.FindAsync(productId)).ReturnsAsync(existingProduct);
-            _mockDbContext.Setup(db => db.SaveChangesAsync(default)).ReturnsAsync(1); // Simulate successful update
+            _mockDbContext.Setup(db => db.SaveChangesAsync(default)).ReturnsAsync(1); 
 
             // Act
             var result = await _productService.UpdateStockAsync(productId, newStock);
